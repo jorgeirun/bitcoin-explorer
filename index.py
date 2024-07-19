@@ -49,58 +49,69 @@ def get_txid_details(txid, coin_symbol = 'btc'):
         return {"error": str(e)}
 
 
-def display_details(type, details):
+def convert_to_json(type, details):
     """
-    Output wallet or transaction details in console
     """
     if type == Type.WALLET:
-        print(f"Address: {details['address']}")
-        print(f"Balance: {details['balance'] / 1e8 } BTC")
-        print(f"Total Received: {details['total_received'] / 1e8 } BTC")
-        print(f"Total Sent: {details['total_sent'] / 1e8 } BTC")
-        print("")
-        print("Transactions:")
-        print("------")
+        json_response =  {
+            "address": details.get("address"),
+            "btc_balance": (details.get("balance") / 1e8),
+            "total_btc_received": (details.get("total_received") / 1e8),
+            "total_btc_sent": (details.get("total_sent") / 1e8),
+            "transactions": []
+        }
         for tx in details['txrefs'][:5]:
-            print(f"Tx Hash: {tx['tx_hash']}")
-            print(f"Confirmations: {tx['confirmations']}")
-            print(f"Value: {tx['value'] / 1e8 } BTC")
-            print(f"Confirmed: {tx['confirmed']}")
-            print("")
+            transaction = {
+                "tx_hash": tx.get("tx_hash"),
+                "confirmations": tx.get("confirmations"),
+                "btc_value": tx.get("value") / 1e8,
+                "confirmed": tx.get("confirmed")
+            }
+            json_response["transactions"].append(transaction)
+
     elif type == Type.TXID:
-        print(f"Transaction ID: {details.get('hash')}")
-        print(f"Block Height: {details.get('block_height')}")
-        print(f"Total Amount: {details.get('total') / 1e8} BTC")  # Convert from satoshis to BTC
-        print(f"Fees: {details.get('fees') / 1e8} BTC")  # Convert from satoshis to BTC
-        print(f"Confirmations: {details.get('confirmations')}")
-        print("------")
-        print("\nInputs:")
+        json_response = {
+            "transaction_id": details.get('hash'),
+            "block_height": details.get('block_height'),
+            "total": details.get('total'),
+            "fees": details.get('fees'),
+            "confirmations": details.get('confirmations'),
+            "inputs": [],
+            "outputs": []
+        }
+        
         for inp in details.get('inputs', []):
-            addresses = inp.get('addresses', [])
-            value = inp.get('output_value') / 1e8  # Convert from satoshis to BTC
-            print(f"  Addresses: {', '.join(addresses)}")
-            print(f"  Amount: {value} BTC")
-        print("\nOutputs:")
+            input = {
+                "addresses": ', '.join(inp.get('addresses', [])),
+                "btc_amount": inp.get('output_value')
+            }
+            json_response["inputs"].append(input)
+            
+            
         for out in details.get('outputs', []):
-            addresses = out.get('addresses', [])
-            value = out.get('value') / 1e8  # Convert from satoshis to BTC
-            print(f"  Addresses: {', '.join(addresses)}")
-            print(f"  Amount: {value} BTC")
+            output = {
+                "addresses": ', '.join(out.get('addresses', [])),
+                "btc_amount": out.get('value')
+            }
+            json_response["outputs"].append(output)
+    
+    print(json_response) # to display in console
+    return json_response
 
 
 def main(string):
     """
     Main function
     """
-    # string = "34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo" # address sample
-    string = "0320ceb7b73dcc00a5b48cc853fd3dd16d0d1ca8130ad27acd15114927ad83d1" # txid sample
+    string = "34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo" # wallet address sample
+    # string = "0320ceb7b73dcc00a5b48cc853fd3dd16d0d1ca8130ad27acd15114927ad83d1" # txid sample
     # Detect if is wallet or txid
     if is_wallet(string):
         address_details = get_wallet_details(string)
-        display_details(Type.WALLET, address_details)
+        return convert_to_json(Type.WALLET, address_details)
     if is_txid(string):
         txid_details = get_txid_details(string)
-        display_details(Type.TXID, txid_details)
+        return convert_to_json(Type.TXID, txid_details)
 
 
 
