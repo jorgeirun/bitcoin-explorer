@@ -1,6 +1,6 @@
 # Bitcoin Address and Transaction Checker
 
-This Python script allows you to check the details of a Bitcoin wallet address or transaction ID using the BlockCypher API. It validates the input and fetches the relevant details, displaying them in a user-friendly format.
+This Python script allows you to check the details of a Bitcoin wallet address or transaction ID using the BlockCypher API. It validates the input and fetches the relevant details, displaying them in json format.
 
 ## Features
 
