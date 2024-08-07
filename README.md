@@ -18,9 +18,13 @@ This Python script allows you to check the details of a Bitcoin wallet address o
 
 1. Clone the repository:
    
-    ```git clone https://github.com/yourusername/bitcoin-checker.git```
+    ```
+   git clone https://github.com/yourusername/bitcoin-checker.git
+    ```
    
-    ```cd bitcoin-checker```
+    ```
+   cd bitcoin-checker
+    ```
 
 3. Install the required libraries:
     ```
