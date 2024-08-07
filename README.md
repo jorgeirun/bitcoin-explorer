@@ -20,9 +20,6 @@ This Python script allows you to check the details of a Bitcoin wallet address o
    
     ```
    git clone https://github.com/yourusername/bitcoin-checker.git
-    ```
-   
-    ```
    cd bitcoin-checker
     ```
 
